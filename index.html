@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Piyush Sharma — Data Analytics, GenAI and Supply Planning Portfolio" />
+  <title>Piyush Sharma | Data Analytics × GenAI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav container">
+      <a class="brand" href="#home">PS<span>.</span></a>
+      <button class="menu-toggle" aria-label="Open navigation">☰</button>
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+        <button id="theme-toggle" class="theme-btn" aria-label="Switch theme">☀</button>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="home" class="hero container">
+      <div class="hero-copy reveal">
+        <div class="status"><span></span> Open to interesting opportunities</div>
+        <p class="eyebrow">PIYUSH SHARMA</p>
+        <h1>Data Analytics<br><span>× GenAI.</span></h1>
+        <p class="hero-text">
+          I build analytical solutions that connect business questions with data,
+          intelligent systems, and practical decisions — from dashboards and forecasting
+          to retrieval-augmented generation pipelines.
+        </p>
+        <div class="hero-actions">
+          <a class="btn primary" href="#projects">Explore projects ↗</a>
+          <a class="btn secondary" href="assets/resume-data-analytics.pdf" download>Download resume ↓</a>
+        </div>
+        <div class="socials">
+          <a href="https://github.com/piyush0920" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/piyush-sharma-6591171ba/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a href="mailto:piyushsh0920@gmail.com">Email ↗</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal">
+        <div class="visual-glow"></div>
+        <div class="code-window">
+          <div class="window-bar"><i></i><i></i><i></i><span>piyush.py</span></div>
+          <pre><code><span class="purple">class</span> <span class="white">PiyushSharma</span>:
+    <span class="purple">focus</span> = [
+        <span class="green">"Data Analytics"</span>,
+        <span class="green">"GenAI / RAG"</span>,
+        <span class="green">"Forecasting"</span>,
+        <span class="green">"Business Impact"</span>
+    ]
+
+    <span class="purple">def</span> <span class="blue">solve</span>(<span class="white">problem</span>):
+        <span class="purple">return</span> data + insight</code></pre>
+        </div>
+        <div class="floating-pill pill-one">Python · SQL · Power BI</div>
+        <div class="floating-pill pill-two">LLM · RAG · Forecasting</div>
+      </div>
+    </section>
+
+    <section id="about" class="section container">
+      <div class="section-heading reveal">
+        <p class="eyebrow">01 — ABOUT</p>
+        <h2>Business context.<br><span>Technical curiosity.</span></h2>
+      </div>
+      <div class="about-grid">
+        <p class="large-copy reveal">
+          Data and GenAI practitioner with 2+ years of experience in P&C insurance
+          operations at Xceedance. I work across data quality, KPI reporting,
+          reconciliation, process optimisation, dashboards, forecasting, and LLM-based
+          applications.
+        </p>
+        <div class="about-facts reveal">
+          <div><span>Professional focus</span><strong>Data Analytics + GenAI</strong></div>
+          <div><span>Current role</span><strong>Senior Executive — Xceedance</strong></div>
+          <div><span>Education</span><strong>Executive Diploma in Data Science & AI — IIIT Bangalore</strong></div>
+          <div><span>Location</span><strong>New Delhi, India</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills" class="section section-muted">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">02 — TOOLKIT</p>
+          <h2>A practical mix of<br><span>data and intelligence.</span></h2>
+        </div>
+        <div id="skills-grid" class="skills-grid"></div>
+      </div>
+    </section>
+
+    <section id="projects" class="section container">
+      <div class="section-heading split reveal">
+        <div>
+          <p class="eyebrow">03 — SELECTED WORK</p>
+          <h2>Projects built to<br><span>answer questions.</span></h2>
+        </div>
+        <div id="project-filters" class="filters"></div>
+      </div>
+      <div id="projects-grid" class="projects-grid"></div>
+    </section>
+
+    <section id="experience" class="section section-muted">
+      <div class="container">
+        <div class="section-heading reveal">
+          <p class="eyebrow">04 — EXPERIENCE</p>
+          <h2>From operations<br><span>to intelligent systems.</span></h2>
+        </div>
+        <div id="experience-list" class="timeline"></div>
+      </div>
+    </section>
+
+    <section id="contact" class="section container">
+      <div class="contact-card reveal">
+        <p class="eyebrow">05 — CONTACT</p>
+        <h2>Let's build something<br><span>useful with data.</span></h2>
+        <p>Interested in analytics, business intelligence, demand planning, GenAI, or practical machine-learning projects? Let's connect.</p>
+        <a class="btn primary" href="mailto:piyushsh0920@gmail.com">Start a conversation ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span>© <span id="year"></span> Piyush Sharma</span>
+      <span>Designed with purple energy.</span>
+    </div>
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
