@@ -35,3 +35,7 @@ The homepage attempts to fetch public repository stars, forks and primary langua
 ## Project snapshots
 
 Project cards use optimized WebP snapshots in `assets/projects/cards/`. The Namma Yatri card uses the supplied Overview dashboard page. The Namma Yatri case study retains all five dashboard views.
+
+
+## Snapshot reliability
+The project-card and Namma Yatri case-study images are embedded into `script.js` as WebP data URLs as a fallback. This means the snapshots can still render even if GitHub's web uploader misses nested image folders. The original WebP files are also included under `assets/projects/`.
