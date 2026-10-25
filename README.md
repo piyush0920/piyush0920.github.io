@@ -56,3 +56,9 @@ The widget is included on the home page and case-study pages. Before publishing,
 
 ## Configure the Cloud Run API URL
 Open `chat-widget.js` and set the `CHAT_API_BASE` fallback to the public Cloud Run service root URL (do not add `/chat` or `/docs`). Do not store a Gemini key in this repository. If you already configured the actual URL in your live GitHub repository, copy that same URL into this package before deploying it.
+## Ask Piyush AI — Portfolio RAG Assistant
+
+The portfolio includes a floating chat widget backed by a FastAPI service. The backend retrieves relevant Markdown knowledge chunks from ChromaDB, uses Gemini 3.5 Flash Lite to generate an answer grounded in the retrieved context, and returns source labels to the widget. The API is containerized with Docker and deployed to Google Cloud Run; the Gemini API key is stored in Secret Manager. The website talks to the service over HTTPS and does not contain the provider key.
+
+Architecture: portfolio widget → FastAPI `/chat` → ChromaDB semantic retrieval → Gemini generation → answer + source labels.
+

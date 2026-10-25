@@ -1,8 +1,8 @@
 /* Ask Piyush AI — floating portfolio chatbot.
    Set CHAT_API_BASE to the public Cloud Run service URL (without a trailing slash). */
 (() => {
-     const CHAT_API_BASE = "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app".replace(/\/+$/, "");
-     const API_CONFIGURED = /^https:\/\/.+/.test(CHAT_API_BASE);
+  const CHAT_API_BASE = (window.ASK_PIYUSH_AI_API_URL || "PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE").replace(/\/+$/, "");
+  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE) && !CHAT_API_BASE.includes("PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE");
 
   const icon = (name) => name === "chat"
     ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.2-.67L4 20l1.53-4.12A7.5 7.5 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
@@ -100,6 +100,123 @@
     });
   }
 
+  // Discover the expected JSON field from FastAPI's OpenAPI schema.
+  // This avoids hard-coding `query` when the deployed endpoint expects e.g. `question`.
+  let chatBodyField = null;
+  let chatBodyFieldPromise = null;
+
+  function resolveOpenApiSchema(schema, spec, depth = 0) {
+    if (!schema || depth > 8) return {};
+    if (schema.$ref) {
+      const name = schema.$ref.split("/").pop().replace(/~1/g, "/").replace(/~0/g, "~");
+      return resolveOpenApiSchema(spec.components?.schemas?.[name], spec, depth + 1);
+    }
+    if (Array.isArray(schema.allOf)) {
+      const merged = { type: "object", properties: {}, required: [] };
+      schema.allOf.forEach((part) => {
+        const resolved = resolveOpenApiSchema(part, spec, depth + 1);
+        Object.assign(merged.properties, resolved.properties || {});
+        merged.required.push(...(resolved.required || []));
+      });
+      merged.required = [...new Set(merged.required)];
+      return merged;
+    }
+    for (const branchKey of ["oneOf", "anyOf"]) {
+      if (Array.isArray(schema[branchKey])) {
+        const branch = schema[branchKey].map(part => resolveOpenApiSchema(part, spec, depth + 1))
+          .find(part => part && (part.properties || part.required));
+        if (branch) return branch;
+      }
+    }
+    return schema;
+  }
+
+  async function discoverChatBodyField() {
+    if (chatBodyField) return chatBodyField;
+    if (!chatBodyFieldPromise) {
+      chatBodyFieldPromise = (async () => {
+        try {
+          const response = await fetch(`${CHAT_API_BASE}/openapi.json`, {
+            method: "GET",
+            headers: { Accept: "application/json" }
+          });
+          if (!response.ok) return "query";
+          const spec = await response.json();
+          const operation = spec.paths?.["/chat"]?.post;
+          const requestSchema = operation?.requestBody?.content?.["application/json"]?.schema;
+          if (!requestSchema) return "query";
+          const schema = resolveOpenApiSchema(requestSchema, spec);
+          const properties = schema.properties || {};
+          const required = Array.isArray(schema.required) ? schema.required : [];
+          const preferred = ["query", "question", "message", "prompt", "input", "text", "user_query", "user_message"];
+          const field = preferred.find(name => required.includes(name) && Object.prototype.hasOwnProperty.call(properties, name))
+            || (required.length === 1 ? required[0] : null)
+            || preferred.find(name => Object.prototype.hasOwnProperty.call(properties, name))
+            || (Object.keys(properties).length === 1 ? Object.keys(properties)[0] : "query");
+          return typeof field === "string" && field ? field : "query";
+        } catch {
+          // Fall back to query; validation-based discovery below can still correct it.
+          return "query";
+        }
+      })();
+    }
+    chatBodyField = await chatBodyFieldPromise;
+    return chatBodyField || "query";
+  }
+
+  async function readResponseJson(response) {
+    try { return await response.json(); } catch { return {}; }
+  }
+
+  async function postChatQuery(query, signal) {
+    let field = await discoverChatBodyField();
+    let lastResult = null;
+
+    // If OpenAPI is unavailable/stale, use FastAPI's 422 location to discover the field.
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const response = await fetch(`${CHAT_API_BASE}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ [field]: query }),
+        signal
+      });
+      const data = await readResponseJson(response);
+      lastResult = { response, data };
+      if (response.status !== 422) {
+        chatBodyField = field;
+        return lastResult;
+      }
+
+      const details = Array.isArray(data.detail) ? data.detail : [];
+      const missingBodyField = details.find(error =>
+        error && error.type === "missing" && Array.isArray(error.loc) &&
+        error.loc[0] === "body" && typeof error.loc[1] === "string"
+      );
+      const nextField = missingBodyField?.loc?.[1];
+      if (nextField && nextField !== field) {
+        field = nextField;
+        chatBodyField = nextField;
+        continue;
+      }
+      break;
+    }
+    return lastResult;
+  }
+
+  function apiErrorText(data, status) {
+    if (typeof data?.detail === "string") return data.detail;
+    if (Array.isArray(data?.detail)) {
+      const messages = data.detail.map(error => {
+        if (!error || typeof error !== "object") return "";
+        const location = Array.isArray(error.loc) ? error.loc.filter(part => part !== "body").join(" → ") : "";
+        const message = typeof error.msg === "string" ? error.msg : "Invalid request";
+        return location ? `${message} (${location})` : message;
+      }).filter(Boolean);
+      if (messages.length) return `The API rejected the request (${status}): ${messages.join("; ")}.`;
+    }
+    return `The chat service returned an error (${status}). Please try again in a moment.`;
+  }
+
   function init() {
     if (document.getElementById("ask-piyush-ai-widget")) return;
     const root = document.createElement("div");
@@ -177,7 +294,7 @@
       addMessage("user", query);
       input.value = ""; input.style.height = "auto";
       if (!API_CONFIGURED) {
-        addMessage("assistant", "The chat widget is installed, but the Cloud Run API URL hasn't been configured yet. Set `CHAT_API_BASE` near the top of `chat-widget.js` to your service URL, then redeploy the portfolio site.");
+        addMessage("assistant", "The chat widget is installed, but the Cloud Run API URL has not been configured. Set `CHAT_API_BASE` near the top of `chat-widget.js` to your service URL, then publish the portfolio site.");
         return;
       }
       busy = true; send.disabled = true; input.disabled = true;
@@ -185,16 +302,14 @@
       const controller = new AbortController();
       const timer = window.setTimeout(() => controller.abort(), 60000);
       try {
-        const response = await fetch(`${CHAT_API_BASE}/chat`, {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query }), signal: controller.signal
-        });
-        let data = {};
-        try { data = await response.json(); } catch { /* Non-JSON error response */ }
+        const { response, data } = await postChatQuery(query, controller.signal);
         typing.remove();
         if (!response.ok) {
-          if (response.status === 429) addMessage("assistant", data.detail || "The chat is receiving too many requests right now. Please wait a little and try again.");
-          else addMessage("assistant", data.detail || `The chat service returned an error (${response.status}). Please try again in a moment.`);
+          if (response.status === 429) {
+            addMessage("assistant", typeof data.detail === "string" ? data.detail : "The chat is receiving too many requests right now. Please wait a little and try again.");
+          } else {
+            addMessage("assistant", apiErrorText(data, response.status));
+          }
         } else {
           const answerText = answerToText(data.answer ?? data.response ?? data.message ?? data.result ?? data);
           const sourceList = Array.isArray(data.sources) ? data.sources : [];
