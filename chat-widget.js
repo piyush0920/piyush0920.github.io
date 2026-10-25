@@ -175,8 +175,16 @@
           if (response.status === 429) addMessage("assistant", data.detail || "The chat is receiving too many requests right now. Please wait a little and try again.");
           else addMessage("assistant", data.detail || `The chat service returned an error (${response.status}). Please try again in a moment.`);
         } else {
-          addMessage("assistant", data.answer || "I couldn't find a response. Please try rephrasing your question.", data.sources || []);
-        }
+              const answerText = answerToText(
+                data.answer ?? data.response ?? data.message ?? ""
+              );
+            
+              addMessage(
+                "assistant",
+                answerText || "I couldn't find a readable response. Please try again.",
+                Array.isArray(data.sources) ? data.sources : []
+              );
+            }
       } catch (error) {
         typing.remove();
         addMessage("assistant", error && error.name === "AbortError" ? "That request took too long. Please try again." : "I couldn't connect to the chat service. Please try again shortly.");
