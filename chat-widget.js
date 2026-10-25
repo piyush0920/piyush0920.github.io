@@ -36,7 +36,32 @@
     }
     if (last < text.length) parent.append(document.createTextNode(text.slice(last)));
   }
-
+   
+  function answerToText(value) {
+     if (typeof value === "string") return value;
+   
+     if (typeof value === "number" || typeof value === "boolean") {
+       return String(value);
+     }
+   
+     if (Array.isArray(value)) {
+       return value.map(answerToText).filter(Boolean).join("\n");
+     }
+   
+     if (value && typeof value === "object") {
+       for (const key of [
+         "answer", "text", "content", "message", "output", "response"
+       ]) {
+         if (value[key] != null) {
+           const text = answerToText(value[key]);
+           if (text) return text;
+         }
+       }
+     }
+   
+     return "";
+   }
+   
   function renderAnswer(container, answer) {
     const lines = String(answer || "I couldn't find an answer just now.").replace(/\r/g, "").split("\n");
     let block = null;
