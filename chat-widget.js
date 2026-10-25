@@ -1,8 +1,8 @@
 /* Ask Piyush AI — floating portfolio chatbot.
    Set CHAT_API_BASE to the public Cloud Run service URL (without a trailing slash). */
 (() => {
-  const CHAT_API_BASE = (window.ASK_PIYUSH_AI_API_URL || "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app/").replace(/\/+$/, "");
-  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE) && !CHAT_API_BASE.includes("https://ask-piyush-ai-44ufu2jwiq-el.a.run.app/");
+  const CHAT_API_BASE = (window.ASK_PIYUSH_AI_API_URL || "PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE").replace(/\/+$/, "");
+  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE) && !CHAT_API_BASE.includes("PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE");
 
   const icon = (name) => name === "chat"
     ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.2-.67L4 20l1.53-4.12A7.5 7.5 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
@@ -36,34 +36,55 @@
     }
     if (last < text.length) parent.append(document.createTextNode(text.slice(last)));
   }
-   
-  function answerToText(value) {
-     if (typeof value === "string") return value;
-   
-     if (typeof value === "number" || typeof value === "boolean") {
-       return String(value);
-     }
-   
-     if (Array.isArray(value)) {
-       return value.map(answerToText).filter(Boolean).join("\n");
-     }
-   
-     if (value && typeof value === "object") {
-       for (const key of [
-         "answer", "text", "content", "message", "output", "response"
-       ]) {
-         if (value[key] != null) {
-           const text = answerToText(value[key]);
-           if (text) return text;
-         }
-       }
-     }
-   
-     return "";
-   }
-   
+
+  // Normalise the API's answer into readable text. Some API response shapes
+  // wrap the answer in an object; String(object) would display "[object Object]".
+  function answerToText(value, depth = 0) {
+    if (depth > 8 || value === null || value === undefined) return "";
+
+    if (typeof value === "string") {
+      const trimmed = value.trim();
+      // Some wrappers serialize a JSON response into a string. Unwrap that too.
+      if ((trimmed.startsWith("{") && trimmed.endsWith("}")) ||
+          (trimmed.startsWith("[") && trimmed.endsWith("]"))) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          if (parsed && typeof parsed === "object") {
+            const extracted = answerToText(parsed, depth + 1);
+            if (extracted) return extracted;
+          }
+        } catch { /* Ordinary prose, not serialized JSON. */ }
+      }
+      return value;
+    }
+
+    if (typeof value === "number" || typeof value === "boolean") return String(value);
+    if (Array.isArray(value)) {
+      return value.map(item => answerToText(item, depth + 1)).filter(Boolean).join("\n");
+    }
+
+    if (typeof value === "object") {
+      for (const key of ["answer", "text", "content", "message", "output", "response", "result", "data", "detail"]) {
+        if (value[key] !== undefined && value[key] !== null) {
+          const extracted = answerToText(value[key], depth + 1);
+          if (extracted) return extracted;
+        }
+      }
+      // Never stringify the whole object: that is what creates [object Object].
+      const primitiveFields = Object.entries(value)
+        .filter(([, item]) => item !== null && item !== undefined &&
+          ["string", "number", "boolean"].includes(typeof item))
+        .map(([key, item]) => `${key}: ${String(item)}`);
+      return primitiveFields.join("\n");
+    }
+
+    return "";
+  }
+
   function renderAnswer(container, answer) {
-    const lines = String(answer || "I couldn't find an answer just now.").replace(/\r/g, "").split("\n");
+    const normalized = answerToText(answer);
+    const safeText = normalized || "I couldn't find a readable answer just now.";
+    const lines = safeText.replace(/\r/g, "").split("\n");
     let block = null;
     let blockType = "";
     lines.forEach((line) => {
@@ -175,16 +196,14 @@
           if (response.status === 429) addMessage("assistant", data.detail || "The chat is receiving too many requests right now. Please wait a little and try again.");
           else addMessage("assistant", data.detail || `The chat service returned an error (${response.status}). Please try again in a moment.`);
         } else {
-              const answerText = answerToText(
-                data.answer ?? data.response ?? data.message ?? ""
-              );
-            
-              addMessage(
-                "assistant",
-                answerText || "I couldn't find a readable response. Please try again.",
-                Array.isArray(data.sources) ? data.sources : []
-              );
-            }
+          const answerText = answerToText(data.answer ?? data.response ?? data.message ?? data.result ?? data);
+          const sourceList = Array.isArray(data.sources) ? data.sources : [];
+          addMessage(
+            "assistant",
+            answerText || "I couldn't find a readable response. Please try rephrasing your question.",
+            sourceList
+          );
+        }
       } catch (error) {
         typing.remove();
         addMessage("assistant", error && error.name === "AbortError" ? "That request took too long. Please try again." : "I couldn't connect to the chat service. Please try again shortly.");

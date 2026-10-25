@@ -47,3 +47,12 @@ The project-card and Namma Yatri case-study images are embedded into `script.js`
 ## Ask Piyush AI widget setup
 
 The widget is included on the home page and case-study pages. Before publishing, open `chat-widget.js` and replace `PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE` in `CHAT_API_BASE` with the public Cloud Run service URL (for example, `https://your-service-xxxxx-asia-south1.run.app`). Use the service root URL only; the script appends `/chat`. Do not add or expose the Gemini API key in this repository. The Cloud Run CORS configuration should allow `https://piyush0920.github.io`.
+
+
+## Recent project visuals and chatbot fix
+- `assets/projects/cards/hybrid-rag.webp` — supplied Hybrid RAG architecture diagram, used on the project card and case-study hero.
+- `assets/projects/cards/shl-grammar.webp` — supplied SHL speech waveform plot, used on the project card and case-study hero.
+- `chat-widget.js` normalizes API response shapes at both fetch and rendering layers, preventing JavaScript objects from appearing as `[object Object]`. `index.html` and `project.html` use versioned script URLs to force browsers to load the fix.
+
+## Configure the Cloud Run API URL
+Open `chat-widget.js` and set the `CHAT_API_BASE` fallback to the public Cloud Run service root URL (do not add `/chat` or `/docs`). Do not store a Gemini key in this repository. If you already configured the actual URL in your live GitHub repository, copy that same URL into this package before deploying it.
