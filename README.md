@@ -46,7 +46,7 @@ The project-card and Namma Yatri case-study images are embedded into `script.js`
 
 ## Ask Piyush AI widget setup
 
-The widget is included on the home page and case-study pages. Before publishing, open `chat-widget.js` and replace `PASTE_YOUR_CLOUD_RUN_SERVICE_URL_HERE` in `CHAT_API_BASE` with the public Cloud Run service URL (for example, `https://your-service-xxxxx-asia-south1.run.app`). Use the service root URL only; the script appends `/chat`. Do not add or expose the Gemini API key in this repository. The Cloud Run CORS configuration should allow `https://piyush0920.github.io`.
+The widget is included on the home page and case-study pages. The widget is preconfigured to use `https://ask-piyush-ai-44ufu2jwiq-el.a.run.app`. It sends requests to `/chat` and reads the FastAPI OpenAPI schema to satisfy the live request contract. Do not add or expose the Gemini API key in this repository. The Cloud Run CORS configuration should allow `https://piyush0920.github.io`.
 
 
 ## Recent project visuals and chatbot fix
@@ -55,7 +55,7 @@ The widget is included on the home page and case-study pages. Before publishing,
 - `chat-widget.js` normalizes API response shapes at both fetch and rendering layers, preventing JavaScript objects from appearing as `[object Object]`. `index.html` and `project.html` use versioned script URLs to force browsers to load the fix.
 
 ## Configure the Cloud Run API URL
-Open `chat-widget.js` and set the `CHAT_API_BASE` fallback to the public Cloud Run service root URL (do not add `/chat` or `/docs`). Do not store a Gemini key in this repository. If you already configured the actual URL in your live GitHub repository, copy that same URL into this package before deploying it.
+The `CHAT_API_BASE` is set to the provided live Cloud Run service root URL. The frontend includes OpenAPI-driven request construction and validation-error recovery. Do not store a Gemini key in this repository.
 ## Ask Piyush AI — Portfolio RAG Assistant
 
 The portfolio includes a floating chat widget backed by a FastAPI service. The backend retrieves relevant Markdown knowledge chunks from ChromaDB, uses Gemini 3.5 Flash Lite to generate an answer grounded in the retrieved context, and returns source labels to the widget. The API is containerized with Docker and deployed to Google Cloud Run; the Gemini API key is stored in Secret Manager. The website talks to the service over HTTPS and does not contain the provider key.

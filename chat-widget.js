@@ -1,8 +1,8 @@
 /* Ask Piyush AI — floating portfolio chatbot.
    Set CHAT_API_BASE to the public Cloud Run service URL (without a trailing slash). */
 (() => {
-  const CHAT_API_BASE = (window.ASK_PIYUSH_AI_API_URL || "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app").replace(/\/+$/, "");
-  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE) && !CHAT_API_BASE.includes("https://ask-piyush-ai-44ufu2jwiq-el.a.run.app");
+  const CHAT_API_BASE = "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app".replace(/\/+$/, "");
+  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE);
 
   const icon = (name) => name === "chat"
     ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.2-.67L4 20l1.53-4.12A7.5 7.5 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
@@ -100,121 +100,226 @@
     });
   }
 
-  // Discover the expected JSON field from FastAPI's OpenAPI schema.
-  // This avoids hard-coding `query` when the deployed endpoint expects e.g. `question`.
-  let chatBodyField = null;
-  let chatBodyFieldPromise = null;
+  // Discover and honor the deployed FastAPI request contract. We build all required
+  // body fields (not just one guessed field), support query parameters, and use
+  // validation details to adapt if the live API schema differs from the cached copy.
+  let chatContractPromise = null;
 
   function resolveOpenApiSchema(schema, spec, depth = 0) {
-    if (!schema || depth > 8) return {};
+    if (!schema || depth > 10) return {};
     if (schema.$ref) {
       const name = schema.$ref.split("/").pop().replace(/~1/g, "/").replace(/~0/g, "~");
       return resolveOpenApiSchema(spec.components?.schemas?.[name], spec, depth + 1);
     }
+    let merged = { ...schema };
     if (Array.isArray(schema.allOf)) {
-      const merged = { type: "object", properties: {}, required: [] };
-      schema.allOf.forEach((part) => {
+      merged = { ...schema, type: schema.type || "object", properties: { ...(schema.properties || {}) }, required: [...(schema.required || [])] };
+      for (const part of schema.allOf) {
         const resolved = resolveOpenApiSchema(part, spec, depth + 1);
         Object.assign(merged.properties, resolved.properties || {});
         merged.required.push(...(resolved.required || []));
-      });
+      }
       merged.required = [...new Set(merged.required)];
-      return merged;
     }
-    for (const branchKey of ["oneOf", "anyOf"]) {
-      if (Array.isArray(schema[branchKey])) {
-        const branch = schema[branchKey].map(part => resolveOpenApiSchema(part, spec, depth + 1))
-          .find(part => part && (part.properties || part.required));
-        if (branch) return branch;
+    for (const key of ["oneOf", "anyOf"]) {
+      if (Array.isArray(schema[key])) {
+        const resolved = schema[key].map(part => resolveOpenApiSchema(part, spec, depth + 1))
+          .find(part => part && (part.properties || part.type));
+        if (resolved) return { ...merged, ...resolved };
       }
     }
-    return schema;
+    return merged;
   }
 
-  async function discoverChatBodyField() {
-    if (chatBodyField) return chatBodyField;
-    if (!chatBodyFieldPromise) {
-      chatBodyFieldPromise = (async () => {
+  async function discoverChatContract() {
+    if (!chatContractPromise) {
+      chatContractPromise = (async () => {
+        const fallback = { bodySchema: { type: "object", properties: { query: { type: "string" } }, required: ["query"] }, queryParams: [] };
         try {
-          const response = await fetch(`${CHAT_API_BASE}/openapi.json`, {
-            method: "GET",
-            headers: { Accept: "application/json" }
-          });
-          if (!response.ok) return "query";
+          const response = await fetch(`${CHAT_API_BASE}/openapi.json`, { headers: { Accept: "application/json" } });
+          if (!response.ok) return fallback;
           const spec = await response.json();
           const operation = spec.paths?.["/chat"]?.post;
-          const requestSchema = operation?.requestBody?.content?.["application/json"]?.schema;
-          if (!requestSchema) return "query";
-          const schema = resolveOpenApiSchema(requestSchema, spec);
-          const properties = schema.properties || {};
-          const required = Array.isArray(schema.required) ? schema.required : [];
-          const preferred = ["query", "question", "message", "prompt", "input", "text", "user_query", "user_message"];
-          const field = preferred.find(name => required.includes(name) && Object.prototype.hasOwnProperty.call(properties, name))
-            || (required.length === 1 ? required[0] : null)
-            || preferred.find(name => Object.prototype.hasOwnProperty.call(properties, name))
-            || (Object.keys(properties).length === 1 ? Object.keys(properties)[0] : "query");
-          return typeof field === "string" && field ? field : "query";
+          if (!operation) return fallback;
+          const rawBodySchema = operation.requestBody?.content?.["application/json"]?.schema;
+          const bodySchema = rawBodySchema ? resolveOpenApiSchema(rawBodySchema, spec) : null;
+          const queryParams = Array.isArray(operation.parameters)
+            ? operation.parameters.filter(p => p?.in === "query" && p?.required).map(p => ({ name: p.name, schema: resolveOpenApiSchema(p.schema || {}, spec) }))
+            : [];
+          // If schema metadata is incomplete, prefer the documented JSON `query` body
+          // contract rather than sending an empty POST.
+          if (!bodySchema && queryParams.length === 0) return fallback;
+          return { bodySchema: bodySchema || null, queryParams };
         } catch {
-          // Fall back to query; validation-based discovery below can still correct it.
-          return "query";
+          return fallback;
         }
       })();
     }
-    chatBodyField = await chatBodyFieldPromise;
-    return chatBodyField || "query";
+    return chatContractPromise;
+  }
+
+  const queryFieldNames = ["query", "question", "message", "prompt", "input", "text", "user_query", "user_message", "user_input"];
+
+  function defaultForSchema(name, schema = {}, query = "", queryField = false) {
+    if (queryField) return query;
+    if (schema.default !== undefined) return schema.default;
+    if (Array.isArray(schema.enum) && schema.enum.length) return schema.enum[0];
+    const n = String(name || "").toLowerCase();
+    if (/(top_k|topk|limit|num_results|k)$/.test(n)) return 4;
+    if (/^(history|messages|documents|context|items)$/.test(n)) return [];
+    if (schema.type === "integer" || schema.type === "number") return schema.minimum ?? 0;
+    if (schema.type === "boolean") return false;
+    if (schema.type === "array") return [];
+    if (schema.type === "object") return {};
+    if (schema.type === "string") return "";
+    return null;
+  }
+
+  function preferredQueryField(properties = {}, required = []) {
+    for (const name of queryFieldNames) {
+      if (Object.prototype.hasOwnProperty.call(properties, name)) return name;
+    }
+    const requiredStrings = required.filter(name => properties[name]?.type === "string");
+    if (requiredStrings.length === 1) return requiredStrings[0];
+    const stringFields = Object.keys(properties).filter(name => properties[name]?.type === "string");
+    if (stringFields.length === 1) return stringFields[0];
+    return required[0] || stringFields[0] || Object.keys(properties)[0] || "query";
+  }
+
+  function buildChatBody(schema, query, depth = 0) {
+    if (!schema || depth > 8) return { query };
+    if (schema.type === "string") return query;
+    const properties = schema.properties || {};
+    const required = Array.isArray(schema.required) ? schema.required : [];
+    const queryField = preferredQueryField(properties, required);
+    const objectChildren = Object.keys(properties).filter(key => properties[key]?.type === "object");
+    // Some wrappers nest the actual request model under a required object field.
+    if (!queryField || (queryField === required[0] && properties[queryField]?.type === "object" && !Object.keys(properties).some(key => queryFieldNames.includes(key)))) {
+      const nestedField = objectChildren.find(key => required.includes(key)) || objectChildren[0];
+      if (nestedField) {
+        const body = {};
+        for (const key of required) {
+          body[key] = key === nestedField
+            ? buildChatBody(properties[key], query, depth + 1)
+            : defaultForSchema(key, properties[key] || {}, query, false);
+        }
+        body[nestedField] = buildChatBody(properties[nestedField], query, depth + 1);
+        return body;
+      }
+    }
+    const keys = new Set([...required, queryField]);
+    const body = {};
+    for (const key of keys) {
+      const childSchema = properties[key] || {};
+      const isQueryField = key === queryField || queryFieldNames.includes(key);
+      body[key] = childSchema.type === "object"
+        ? buildChatBody(childSchema, query, depth + 1)
+        : defaultForSchema(key, childSchema, query, isQueryField);
+    }
+    if (!Object.keys(body).length) body.query = query;
+    return body;
+  }
+
+  function collectValidationErrors(data) {
+    const pools = [data?.detail, data?.answer, data?.error, data?.response, data?.result];
+    for (const candidate of pools) {
+      if (Array.isArray(candidate) && candidate.some(item => item && typeof item === "object" && (item.type || item.msg || item.loc))) return candidate;
+      if (candidate && typeof candidate === "object" && (candidate.type || candidate.msg || candidate.loc)) return [candidate];
+      if (candidate && typeof candidate === "object" && Array.isArray(candidate.detail)) return candidate.detail;
+    }
+    return [];
+  }
+
+  function valueForMissingField(location, field, query, contract, body) {
+    const schema = contract.bodySchema?.properties?.[field] || {};
+    const name = String(field || "").toLowerCase();
+    const likelyQuery = queryFieldNames.includes(name) || /(query|question|prompt|message|input|text)/.test(name);
+    if (location === "body") {
+      if (likelyQuery) return query;
+      if (Object.prototype.hasOwnProperty.call(body, field)) return body[field];
+      return defaultForSchema(field, schema, query, false);
+    }
+    const parameter = contract.queryParams.find(p => p.name === field);
+    if (likelyQuery) return query;
+    return defaultForSchema(field, parameter?.schema || {}, query, false);
+  }
+
+  async function postChatQuery(query, signal) {
+    const contract = await discoverChatContract();
+    let body = buildChatBody(contract.bodySchema, query);
+    let params = {};
+    for (const parameter of contract.queryParams) {
+      params[parameter.name] = valueForMissingField("query", parameter.name, query, contract, body);
+    }
+    let lastResult = null;
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const requestUrl = new URL(`${CHAT_API_BASE}/chat`);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) requestUrl.searchParams.set(key, String(value));
+      });
+      const options = { method: "POST", headers: { Accept: "application/json" }, signal };
+      if (contract.bodySchema) {
+        options.headers["Content-Type"] = "application/json";
+        options.body = JSON.stringify(body);
+      }
+      const response = await fetch(requestUrl.toString(), options);
+      const data = await readResponseJson(response);
+      const validationErrors = collectValidationErrors(data);
+      lastResult = { response, data, validationErrors };
+
+      // Some wrapper handlers incorrectly serialize a validation error with HTTP 200.
+      const looksLikeMissingField = validationErrors.some(error => error?.type === "missing" && error?.msg === "Field required");
+      if (response.ok && !looksLikeMissingField) return lastResult;
+      if (response.status !== 422 && !looksLikeMissingField) return lastResult;
+
+      let changed = false;
+      for (const error of validationErrors) {
+        if (!error || error.type !== "missing" || !Array.isArray(error.loc)) continue;
+        const location = error.loc[0];
+        const field = error.loc[1];
+        if (location === "body" && typeof field === "string") {
+          const value = valueForMissingField("body", field, query, contract, body);
+          if (body && typeof body === "object" && body[field] !== value) { body[field] = value; changed = true; }
+        } else if (location === "query" && typeof field === "string") {
+          const value = valueForMissingField("query", field, query, contract, body);
+          if (params[field] !== value) { params[field] = value; changed = true; }
+        }
+      }
+      // If the response omits locations, try a short list of common field names
+      // while preserving already supplied fields. FastAPI ignores extra model keys by default.
+      if (!changed && attempt < 4) {
+        if (contract.bodySchema && typeof body === "object" && body !== null) {
+          // When an error wrapper omits `loc`, try alternate common query-field
+          // names without replacing fields already present in the payload.
+          const nextField = queryFieldNames.find(name => body[name] !== query) || `query_${attempt + 1}`;
+          if (body[nextField] !== query) { body[nextField] = query; changed = true; }
+        } else if (!contract.bodySchema) {
+          const nextField = queryFieldNames.find(name => params[name] !== query) || `query_${attempt + 1}`;
+          if (params[nextField] !== query) { params[nextField] = query; changed = true; }
+        }
+      }
+      if (!changed) break;
+    }
+    return lastResult || { response: { ok: false, status: 0 }, data: {}, validationErrors: [] };
   }
 
   async function readResponseJson(response) {
     try { return await response.json(); } catch { return {}; }
   }
 
-  async function postChatQuery(query, signal) {
-    let field = await discoverChatBodyField();
-    let lastResult = null;
-
-    // If OpenAPI is unavailable/stale, use FastAPI's 422 location to discover the field.
-    for (let attempt = 0; attempt < 3; attempt++) {
-      const response = await fetch(`${CHAT_API_BASE}/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ [field]: query }),
-        signal
-      });
-      const data = await readResponseJson(response);
-      lastResult = { response, data };
-      if (response.status !== 422) {
-        chatBodyField = field;
-        return lastResult;
-      }
-
-      const details = Array.isArray(data.detail) ? data.detail : [];
-      const missingBodyField = details.find(error =>
-        error && error.type === "missing" && Array.isArray(error.loc) &&
-        error.loc[0] === "body" && typeof error.loc[1] === "string"
-      );
-      const nextField = missingBodyField?.loc?.[1];
-      if (nextField && nextField !== field) {
-        field = nextField;
-        chatBodyField = nextField;
-        continue;
-      }
-      break;
-    }
-    return lastResult;
-  }
-
   function apiErrorText(data, status) {
-    if (typeof data?.detail === "string") return data.detail;
-    if (Array.isArray(data?.detail)) {
-      const messages = data.detail.map(error => {
-        if (!error || typeof error !== "object") return "";
-        const location = Array.isArray(error.loc) ? error.loc.filter(part => part !== "body").join(" → ") : "";
-        const message = typeof error.msg === "string" ? error.msg : "Invalid request";
-        return location ? `${message} (${location})` : message;
-      }).filter(Boolean);
-      if (messages.length) return `The API rejected the request (${status}): ${messages.join("; ")}.`;
+    const errors = collectValidationErrors(data);
+    if (errors.length) {
+      const messages = errors.map(error => {
+        const loc = Array.isArray(error?.loc) ? error.loc.filter(part => part !== "body").join(" → ") : "";
+        const message = typeof error?.msg === "string" ? error.msg : "Invalid request";
+        return loc ? `${message} (${loc})` : message;
+      });
+      return `The chat API rejected the request${status ? ` (${status})` : ""}: ${messages.join("; ")}.`;
     }
-    return `The chat service returned an error (${status}). Please try again in a moment.`;
+    if (typeof data?.detail === "string") return data.detail;
+    return `The chat service returned an error${status ? ` (${status})` : ""}. Please try again in a moment.`;
   }
 
   function init() {
@@ -294,7 +399,7 @@
       addMessage("user", query);
       input.value = ""; input.style.height = "auto";
       if (!API_CONFIGURED) {
-        addMessage("assistant", "The chat widget is installed, but the Cloud Run API URL has not been configured. Set `CHAT_API_BASE` near the top of `chat-widget.js` to your service URL, then publish the portfolio site.");
+        addMessage("assistant", "The chat API URL is not configured in this version of the portfolio. Please refresh the page or check the deployed chat-widget.js file.");
         return;
       }
       busy = true; send.disabled = true; input.disabled = true;
@@ -302,13 +407,13 @@
       const controller = new AbortController();
       const timer = window.setTimeout(() => controller.abort(), 60000);
       try {
-        const { response, data } = await postChatQuery(query, controller.signal);
+        const { response, data, validationErrors = [] } = await postChatQuery(query, controller.signal);
         typing.remove();
-        if (!response.ok) {
+        if (!response.ok || validationErrors.some(error => error?.type === "missing" && error?.msg === "Field required")) {
           if (response.status === 429) {
             addMessage("assistant", typeof data.detail === "string" ? data.detail : "The chat is receiving too many requests right now. Please wait a little and try again.");
           } else {
-            addMessage("assistant", apiErrorText(data, response.status));
+            addMessage("assistant", apiErrorText(data, response.status === 200 ? 422 : response.status));
           }
         } else {
           const answerText = answerToText(data.answer ?? data.response ?? data.message ?? data.result ?? data);
