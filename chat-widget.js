@@ -1,8 +1,8 @@
 /* Ask Piyush AI — floating portfolio chatbot.
    Set CHAT_API_BASE to the public Cloud Run service URL (without a trailing slash). */
 (() => {
-  const CHAT_API_BASE = (window.ASK_PIYUSH_AI_API_URL || "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app").replace(/\/+$/, "");
-  const API_CONFIGURED = /^https:\/\//i.test(CHAT_API_BASE) && !CHAT_API_BASE.includes("https://ask-piyush-ai-44ufu2jwiq-el.a.run.app");
+     const CHAT_API_BASE = "https://ask-piyush-ai-44ufu2jwiq-el.a.run.app".replace(/\/+$/, "");
+     const API_CONFIGURED = /^https:\/\/.+/.test(CHAT_API_BASE);
 
   const icon = (name) => name === "chat"
     ? '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.2-.67L4 20l1.53-4.12A7.5 7.5 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.5 11.5h.01M12.5 11.5h.01M16.5 11.5h.01" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>'
