@@ -432,6 +432,18 @@
       }
     }
 
+    document.addEventListener("click", (event) => {
+      const trigger = event.target.closest("[data-open-chat]");
+      if (!trigger) return;
+      event.preventDefault();
+      openPanel();
+      const prompt = trigger.getAttribute("data-chat-prompt");
+      if (prompt) {
+        input.value = prompt;
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+    });
+
     launcher.addEventListener("click", () => panel.classList.contains("open") ? closePanel() : openPanel());
     close.addEventListener("click", closePanel);
     form.addEventListener("submit", (event) => { event.preventDefault(); sendQuery(input.value); });

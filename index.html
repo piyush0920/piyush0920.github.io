@@ -3,212 +3,153 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#0b0914" />
-  <meta name="description" content="Piyush Sharma — hybrid Data Analytics + GenAI professional portfolio. Analytics, BI, forecasting, machine learning and RAG systems." />
-  <meta property="og:title" content="Piyush Sharma | Data Analytics × GenAI" />
-  <meta property="og:description" content="A hybrid Data Analytics + GenAI portfolio featuring dashboards, forecasting, machine learning and RAG systems." />
+  <meta name="theme-color" content="#11160f" />
+  <meta name="description" content="Piyush Sharma — Data Analytics, Business Intelligence and applied AI. Explore analytics, forecasting, machine learning and RAG projects." />
+  <meta property="og:title" content="Piyush Sharma — Data, with context." />
+  <meta property="og:description" content="An editorial portfolio of data analytics, BI, forecasting, machine learning and applied GenAI work." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://piyush0920.github.io/" />
   <meta property="og:image" content="https://piyush0920.github.io/assets/og-image.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <title>Piyush Sharma | Data Analytics × GenAI</title>
+  <title>Piyush Sharma — Data, with context.</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261026-fix2" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=20261101-editorial1" />
 </head>
 <body data-page="home">
-  <div class="noise"></div>
+  <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-header">
-    <nav class="nav container">
-      <a class="brand" href="#home" aria-label="Piyush Sharma home">PS<span>.</span></a>
-      <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+    <nav class="nav container" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="Piyush Sharma home"><span class="brand-mark">P</span><span class="brand-copy">PIYUSH SHARMA<small>DATA · ANALYTICS · APPLIED AI</small></span></a>
+      <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false">MENU</button>
       <div class="nav-links">
-        <a href="#about">About</a>
-        <a href="#skills">Skills</a>
-        <a href="#projects">Projects</a>
+        <a href="#work">Work</a>
+        <a href="#approach">Approach</a>
         <a href="#experience">Experience</a>
+        <a href="#credentials">Credentials</a>
+        <a href="ask-piyush-ai.html">Ask AI</a>
         <a href="#contact">Contact</a>
-        <button id="theme-toggle" class="theme-btn" aria-label="Switch theme">☀</button>
+        <button id="theme-toggle" class="theme-btn" aria-label="Switch colour mode" title="Switch colour mode">☀</button>
       </div>
     </nav>
   </header>
 
-  <main>
+  <main id="main">
     <section id="home" class="hero container">
       <div class="hero-copy reveal">
-        <div class="status"><span></span> Data Analytics + GenAI</div>
-        <p class="eyebrow">PIYUSH SHARMA</p>
-        <h1>I turn messy data into <span>useful intelligence.</span></h1>
-        <p class="hero-text">
-          Data analyst with a business-operations foundation, building dashboards, forecasting models,
-          machine-learning workflows and RAG applications that connect technical work to decisions.
-        </p>
+        <div class="hero-kicker"><span class="kicker-line"></span><span>INDEPENDENT DATA PRACTICE · NCR, INDIA</span></div>
+        <p class="eyebrow">PIYUSH SHARMA <span>— PORTFOLIO 2026</span></p>
+        <h1>Data with<br /><em>context.</em><br />Models with<br />purpose.</h1>
+        <p class="hero-text">I work across business operations, analytics and applied AI — turning imperfect data into clear reporting, useful forecasts and grounded systems.</p>
         <div class="hero-actions">
-          <a class="btn primary" href="#projects">Explore projects ↗</a>
-          <button class="btn secondary" id="resume-menu">View resumes ↓</button>
+          <a class="btn primary" href="#work">Explore selected work <span>↘</span></a>
+          <button class="btn secondary" id="resume-menu">View resumes <span>↗</span></button>
+          <button class="btn text-btn" type="button" data-open-chat>Ask Piyush AI <span>↗</span></button>
         </div>
         <div class="socials">
-          <a href="https://github.com/piyush0920" target="_blank" rel="noreferrer">GitHub ↗</a>
-          <a href="https://www.linkedin.com/in/piyush-sharma-6591171ba/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a href="https://github.com/piyush0920" target="_blank" rel="noreferrer">GitHub <span>↗</span></a>
+          <a href="https://www.linkedin.com/in/piyush-sharma-6591171ba/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a>
           <a href="mailto:piyushsh0920@gmail.com">piyushsh0920@gmail.com</a>
         </div>
       </div>
 
-      <div class="hero-visual reveal">
-        <div class="visual-glow"></div>
-        <div class="data-orbit orbit-a"></div>
-        <div class="data-orbit orbit-b"></div>
-        <div class="code-window">
-          <div class="window-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span><span>portfolio.py</span></div>
-          <pre><code><span class="purple">profile</span> = {
-    <span class="green">"analytics"</span>: [<span class="blue">"SQL"</span>, <span class="blue">"Python"</span>, <span class="blue">"Power BI"</span>],
-    <span class="green">"intelligence"</span>: [<span class="blue">"Forecasting"</span>, <span class="blue">"ML"</span>, <span class="blue">"RAG"</span>],
-    <span class="green">"goal"</span>: <span class="white">"business impact"</span>
-}
-
-<span class="purple">def</span> <span class="white">solve</span>(<span class="blue">problem</span>):
-    <span class="purple">return</span> <span class="white">data</span> + <span class="white">insight</span> + <span class="white">action</span></code></pre>
-        </div>
-        <div class="floating-pill pill-one">Python · SQL · Power BI</div>
-        <div class="floating-pill pill-two">LLM · RAG · Forecasting</div>
-        <div class="floating-pill pill-three">2+ years in operations</div>
-      </div>
-    </section>
-
-    <section class="stats-strip">
-      <div class="container stats-grid">
-        <div><strong>2+</strong><span>years at Xceedance</span></div>
-        <div><strong>9</strong><span>featured projects</span></div>
-        <div><strong>13</strong><span>forecasting models evaluated</span></div>
-        <div><strong>84K+</strong><span>RAG document chunks</span></div>
-      </div>
-    </section>
-
-    <section id="about" class="section container">
-      <div class="section-heading reveal">
-        <p class="eyebrow">01 — ABOUT</p>
-        <h2>Business context.<br /><span>Technical curiosity.</span></h2>
-      </div>
-      <div class="about-grid">
-        <p class="large-copy reveal">
-          My work sits between operations and technology. At Xceedance, I work with policy data,
-          raters, reconciliation, KPI reporting and process workflows. Alongside that experience,
-          I have been building a deeper stack in analytics, forecasting, machine learning and GenAI.
-        </p>
-        <div class="about-facts reveal">
-          <div><span>Professional focus</span><strong>Data Analytics + GenAI</strong></div>
-          <div><span>Current role</span><strong>Senior Executive — Insurance Operations</strong></div>
-          <div><span>Education</span><strong>Executive Diploma in Data Science & AI — IIIT Bangalore</strong></div>
-          <div><span>Location</span><strong>New Delhi, India</strong></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="career" class="section section-muted">
-      <div class="container">
-        <div class="section-heading reveal">
-          <p class="eyebrow">CAREER STORY</p>
-          <h2>From business operations<br /><span>to intelligent systems.</span></h2>
-        </div>
-        <div class="career-track reveal">
-          <div class="career-node"><span>01</span><strong>Mathematics</strong><small>University of Delhi</small></div>
-          <div class="career-arrow">→</div>
-          <div class="career-node"><span>02</span><strong>Insurance Operations</strong><small>Data + process workflows</small></div>
-          <div class="career-arrow">→</div>
-          <div class="career-node"><span>03</span><strong>Analytics & BI</strong><small>SQL · Python · Power BI</small></div>
-          <div class="career-arrow">→</div>
-          <div class="career-node accent"><span>04</span><strong>GenAI / RAG</strong><small>LLMs · retrieval · evaluation</small></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="skills" class="section container">
-      <div class="section-heading reveal">
-        <p class="eyebrow">02 — TOOLKIT</p>
-        <h2>A practical mix of<br /><span>data and intelligence.</span></h2>
-      </div>
-      <div id="skills-grid" class="skills-grid"></div>
-      <div class="exploring reveal">
-        <div><span class="exploring-label">CURRENTLY EXPLORING</span><strong>Extending the stack beyond the notebook.</strong></div>
-        <div class="exploring-tags" id="exploring-tags"></div>
-      </div>
-    </section>
-
-    <section id="projects" class="section section-muted">
-      <div class="container">
-        <div class="section-heading split reveal">
-          <div>
-            <p class="eyebrow">03 — SELECTED WORK</p>
-            <h2>Projects built to<br /><span>answer questions.</span></h2>
+      <div class="hero-aside reveal" aria-label="Current work snapshot">
+        <div class="folio-label"><span>FIELD NOTE / 001</span><span>WHAT I BRING</span></div>
+        <div class="hero-note">
+          <div class="note-top"><span class="note-stamp">PS / 26</span><span class="note-status"><i></i> AVAILABLE FOR THE RIGHT CONVERSATION</span></div>
+          <p class="note-title">A practical bridge between<br /><em>business questions</em> and<br />technical answers.</p>
+          <div class="note-rule"></div>
+          <div class="note-metrics">
+            <div><strong>20<span>%</span></strong><small>PROCESS EFFICIENCY<br />IMPROVEMENT</small></div>
+            <div><strong>84,844</strong><small>LEGAL DOCUMENT<br />CHUNKS INDEXED</small></div>
           </div>
-          <div id="project-filters" class="filters"></div>
+          <div class="mini-chart" aria-label="Illustrative analytics chart">
+            <div class="chart-head"><span>THE WORK, IN THREE LAYERS</span><span>01 / 03</span></div>
+            <div class="chart-bars"><i style="--h:38%"></i><i style="--h:55%"></i><i style="--h:47%"></i><i style="--h:72%"></i><i style="--h:60%"></i><i style="--h:87%"></i><i style="--h:76%"></i><i style="--h:96%"></i><i style="--h:82%"></i><i style="--h:100%"></i><i style="--h:91%"></i><i style="--h:100%"></i></div>
+            <div class="chart-labels"><span>OPERATIONS</span><span>ANALYTICS</span><span>INTELLIGENCE</span></div>
+          </div>
         </div>
+        <div class="aside-foot"><span>SQL / PYTHON / POWER BI</span><span>RAG / ML / FORECASTING</span></div>
+      </div>
+      <div class="hero-index" aria-hidden="true">01 <span>—</span> INTRODUCTION</div>
+    </section>
+
+    <section class="ticker" aria-label="Areas of work"><div class="ticker-track"><span>DATA ANALYTICS</span><b>✳</b><span>BUSINESS INTELLIGENCE</span><b>✳</b><span>FORECASTING</span><b>✳</b><span>MACHINE LEARNING</span><b>✳</b><span>GENERATIVE AI</span><b>✳</b><span>DATA ANALYTICS</span><b>✳</b><span>BUSINESS INTELLIGENCE</span><b>✳</b><span>FORECASTING</span><b>✳</b><span>MACHINE LEARNING</span><b>✳</b><span>GENERATIVE AI</span><b>✳</b></div></section>
+
+    <section id="about" class="section container about-section">
+      <div class="section-side"><p class="eyebrow">01 / ABOUT</p><span class="side-caption">THE SHORT VERSION</span></div>
+      <div class="about-main reveal">
+        <h2>I like work that starts with a messy question and ends with a <em>clearer decision.</em></h2>
+        <div class="about-bottom">
+          <p>My foundation is in P&amp;C insurance operations at Xceedance, where I work with policy data, pricing raters, reconciliations, KPI reporting and process controls. Outside the day-to-day, I build analytical projects spanning Power BI, PySpark, forecasting and machine learning — alongside RAG applications that make information easier to retrieve and use.</p>
+          <dl class="facts-list">
+            <div><dt>NOW</dt><dd>Senior Executive · Xceedance</dd></div>
+            <div><dt>STUDY</dt><dd>Executive Diploma, Data Science &amp; AI · IIIT Bangalore</dd></div>
+            <div><dt>BASE</dt><dd>Delhi NCR, India</dd></div>
+            <div><dt>FOCUS</dt><dd>Analytics first · Applied AI alongside</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section class="principle-band">
+      <div class="container principle-inner reveal"><span class="eyebrow">WORKING PRINCIPLE</span><p>Good analysis is not a dashboard full of numbers.<br /><em>It is the next question made easier to answer.</em></p><span class="principle-mark">✳</span></div>
+    </section>
+
+    <section id="approach" class="section container approach-section">
+      <div class="section-side"><p class="eyebrow">02 / CAPABILITIES</p><span class="side-caption">TOOLS ARE ONLY THE START</span></div>
+      <div class="approach-main">
+        <div class="section-intro reveal"><h2>A toolkit built around<br /><em>the problem, not the trend.</em></h2><p>From data preparation and operational reporting to predictive modelling and retrieval-based applications, I choose the method that fits the question.</p></div>
+        <div id="skills-grid" class="skills-grid"></div>
+        <div class="exploring reveal"><div><span class="exploring-label">IN THE LEARNING QUEUE</span><strong>Continuing to widen the toolkit.</strong></div><div class="exploring-tags" id="exploring-tags"></div></div>
+      </div>
+    </section>
+
+    <section id="work" class="section work-section">
+      <div class="container">
+        <div class="work-heading reveal"><div><p class="eyebrow">03 / SELECTED WORK</p><h2>Projects with a<br /><em>point of view.</em></h2><p class="work-intro">A selection of analysis, modelling and applied AI projects. Each case study explains the question, the approach and what the work surfaced.</p></div><div class="work-count"><strong>10</strong><span>PROJECTS<br />IN THE NOTEBOOK</span></div></div>
+        <div class="filter-row"><span>FILTER THE WORK</span><div id="project-filters" class="filters"></div></div>
         <div id="projects-grid" class="projects-grid"></div>
       </div>
     </section>
 
-    <section id="experience" class="section container">
-      <div class="section-heading reveal">
-        <p class="eyebrow">04 — EXPERIENCE</p>
-        <h2>Operational experience,<br /><span>analytical thinking.</span></h2>
-      </div>
-      <div id="experience-list" class="timeline"></div>
+    <section id="experience" class="section container experience-section">
+      <div class="section-side"><p class="eyebrow">04 / EXPERIENCE</p><span class="side-caption">THE PROFESSIONAL THREAD</span></div>
+      <div class="experience-main reveal"><div class="section-intro"><h2>Grounded in operations.<br /><em>Growing through analysis.</em></h2><p>Experience across policy operations, process improvement, stakeholder coordination and applied data science.</p></div><div id="experience-list" class="timeline"></div></div>
     </section>
 
-    <section id="certifications" class="section section-muted">
-      <div class="container two-column-section">
-        <div class="section-heading reveal">
-          <p class="eyebrow">CERTIFICATIONS</p>
-          <h2>Learning that<br /><span>supports the work.</span></h2>
-        </div>
+    <section id="credentials" class="section credential-section">
+      <div class="container credential-grid">
+        <div class="credential-intro reveal"><p class="eyebrow">05 / EDUCATION &amp; CREDENTIALS</p><h2>Learning is part<br />of the <em>practice.</em></h2><div class="education-note"><span>EDUCATION</span><strong>Executive Diploma in Data Science &amp; AI</strong><small>IIIT Bangalore · delivered via upGrad · 2025–2026 · GPA 3.82/4.00</small><strong>B.A. Mathematics &amp; Office Management</strong><small>University of Delhi · 2020–2023</small></div></div>
         <div class="cert-list reveal">
-          <div class="cert-item"><span>01</span><div><strong>Google Data Analytics Professional Certificate</strong><small>Coursera</small></div></div>
-          <div class="cert-item"><span>02</span><div><strong>Programming & Mathematics Bootcamp</strong><small>UpGrad</small></div></div>
-          <div class="cert-item"><span>03</span><div><strong>Executive Diploma in Data Science & AI</strong><small>IIIT Bangalore · ongoing</small></div></div>
+          <article class="cert-item"><span class="cert-index">01</span><div><strong>Google Data Analytics Professional Certificate</strong><small>Coursera · Professional certificate</small></div><span class="cert-mark">↗</span></article>
+          <article class="cert-item"><span class="cert-index">02</span><div><strong>Programming &amp; Mathematics Bootcamp</strong><small>upGrad · December 2025</small></div><span class="cert-mark">↗</span></article>
+          <a class="cert-item cert-link" href="https://maven.com/wrap-up/b6e58d65" target="_blank" rel="noreferrer"><span class="cert-index">03</span><div><strong>Charlie's Coffee — Maven Workshop</strong><small>Maven · View certificate / workshop record</small></div><span class="cert-mark">↗</span></a>
         </div>
       </div>
     </section>
 
-    <section id="contact" class="section container">
-      <div class="contact-card reveal">
-        <div>
-          <p class="eyebrow">05 — CONTACT</p>
-          <h2>Let's build something<br /><span>useful with data.</span></h2>
-          <p>Open to conversations around data analytics, business intelligence, demand planning, forecasting, and GenAI.</p>
-        </div>
-        <div class="contact-actions">
-          <a class="btn primary" href="mailto:piyushsh0920@gmail.com">Email me ↗</a>
-          <a class="btn secondary" href="https://www.linkedin.com/in/piyush-sharma-6591171ba/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
-          <a class="btn secondary" href="https://github.com/piyush0920" target="_blank" rel="noreferrer">GitHub ↗</a>
-        </div>
-      </div>
+    <section id="contact" class="section container contact-section">
+      <div class="contact-card reveal"><div class="contact-top"><p class="eyebrow">06 / CONTACT</p><span>OPEN TO THE RIGHT OPPORTUNITY</span></div><h2>Let's make the<br /><em>next decision clearer.</em></h2><div class="contact-bottom"><p>Interested in data analyst, business intelligence, junior data science and applied AI opportunities — especially where analytical work connects to real operations.</p><div class="contact-actions"><a class="btn primary" href="mailto:piyushsh0920@gmail.com">Start a conversation <span>↗</span></a><a class="btn secondary" href="https://www.linkedin.com/in/piyush-sharma-6591171ba/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a><a class="btn secondary" href="https://github.com/piyush0920" target="_blank" rel="noreferrer">GitHub <span>↗</span></a></div></div></div>
     </section>
   </main>
 
   <div id="resume-modal" class="modal" aria-hidden="true">
     <div class="modal-backdrop"></div>
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="resume-title">
-      <button class="modal-close" aria-label="Close">×</button>
-      <p class="eyebrow">CHOOSE A VERSION</p>
-      <h3 id="resume-title">Download my resume</h3>
-      <p>Two versions, depending on the role you're reviewing me for.</p>
+      <button class="modal-close" aria-label="Close">×</button><p class="eyebrow">CHOOSE A VERSION</p><h3 id="resume-title">Which lens are you hiring for?</h3><p>Two focused versions of my resume, depending on the role.</p>
       <div class="resume-options">
-        <a href="assets/resume-data-analytics.pdf" download class="resume-option"><strong>Data Analytics</strong><span>Demand Intelligence · Supply Planning · BI</span><b>↓</b></a>
-        <a href="assets/resume-genai.pdf" download class="resume-option"><strong>GenAI Engineer</strong><span>LLM · RAG · Python · AI applications</span><b>↓</b></a>
+        <a href="assets/resume-data-analytics.pdf" target="_blank" rel="noreferrer" class="resume-option"><div><strong>Data Analytics</strong><span>BI · Reporting · Demand Intelligence</span></div><b>↗</b></a>
+        <a href="assets/resume-genai.pdf" target="_blank" rel="noreferrer" class="resume-option"><div><strong>GenAI / AI Applications</strong><span>LLM · RAG · Python · Retrieval</span></div><b>↗</b></a>
       </div>
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <span>© <span id="year"></span> Piyush Sharma</span>
-      <span>Data · Analytics · Intelligence</span>
-    </div>
-  </footer>
+  <footer class="footer"><div class="container footer-inner"><a class="footer-brand" href="#home">PS<span>.</span></a><span>© <span id="year"></span> Piyush Sharma</span><span>MADE WITH CURIOSITY · NOT JUST CODE</span><a href="#home">BACK TO TOP ↑</a></div></footer>
 
-  <script src="script.js?v=20261026-live-api-v3"></script>
-  <script src="chat-widget.js?v=20261026-live-api-v3"></script>
+  <script src="script.js?v=20261101-editorial1"></script>
+  <script src="chat-widget.js?v=20261101-editorial1"></script>
 </body>
 </html>
