@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img"><defs>
+<linearGradient id="wash" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#222d22"/><stop offset="1" stop-color="#111810"/></linearGradient>
+<pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#75836a" stroke-opacity=".22" stroke-width="1"/></pattern>
+<linearGradient id="sage" x1="0" x2="1"><stop stop-color="#d9ee9a"/><stop offset="1" stop-color="#829568"/></linearGradient>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#wash)"/><rect width="1200" height="675" fill="url(#grid)"/>
+<circle cx="1000" cy="90" r="170" fill="#9eaa70" opacity=".07" filter="url(#soft)"/>
+<text x="70" y="78" font-family="monospace" font-size="18" fill="#d9ee9a" font-weight="700" letter-spacing="4">GEOSPATIAL ANALYTICS / URBAN MOBILITY</text><text x="70" y="150" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">Finding the patterns</text><text x="70" y="208" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">behind every trip.</text><text x="70" y="282" font-family="Arial,sans-serif" font-size="20" fill="#c9c9b9" font-weight="400">NYC yellow taxi  •  pickup and drop-off geography  •  operations</text><g transform="translate(640 190)">
+<g fill="#829568" opacity=".27" stroke="#c6db86" stroke-width="2"><rect x="40" y="95" width="68" height="290"/><rect x="125" y="35" width="82" height="350"/><rect x="225" y="75" width="72" height="310"/><rect x="315" y="10" width="90" height="375"/><rect x="425" y="60" width="70" height="325"/></g>
+<g stroke="#d9ee9a" stroke-opacity=".35" stroke-width="2"><path d="M55 125h38M55 160h38M55 195h38M55 230h38M55 265h38M55 300h38M140 75h52M140 110h52M140 145h52M140 180h52M140 215h52M140 250h52M140 285h52M240 115h42M240 150h42M240 185h42M240 220h42M240 255h42M332 55h55M332 90h55M332 125h55M332 160h55M332 195h55M332 230h55M332 265h55M442 100h38M442 135h38M442 170h38M442 205h38M442 240h38"/></g>
+<path d="M25 420H545M55 405 155 390 245 425 330 395 440 410 530 380" fill="none" stroke="#e38a63" stroke-width="6" stroke-dasharray="4 13" stroke-linecap="round"/>
+<g transform="translate(190 350)"><path d="M0 30h190l-12-48q-6-19-25-19H50Q31-37 24-18Z" fill="#e3b35f" stroke="#f3e1a2" stroke-width="3"/><rect x="54" y="-30" width="75" height="28" rx="6" fill="#243026"/><circle cx="42" cy="32" r="15" fill="#111810" stroke="#c9c9b9" stroke-width="4"/><circle cx="152" cy="32" r="15" fill="#111810" stroke="#c9c9b9" stroke-width="4"/><rect x="74" y="-56" width="46" height="13" rx="4" fill="#e38a63"/></g>
+<g fill="#d9ee9a"><circle cx="75" cy="420" r="8"/><circle cx="245" cy="425" r="8"/><circle cx="440" cy="410" r="8"/></g>
+</g></svg>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img"><defs>
+<linearGradient id="wash" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#222d22"/><stop offset="1" stop-color="#111810"/></linearGradient>
+<pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#75836a" stroke-opacity=".22" stroke-width="1"/></pattern>
+<linearGradient id="sage" x1="0" x2="1"><stop stop-color="#d9ee9a"/><stop offset="1" stop-color="#829568"/></linearGradient>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#wash)"/><rect width="1200" height="675" fill="url(#grid)"/>
+<circle cx="1000" cy="90" r="170" fill="#9eaa70" opacity=".07" filter="url(#soft)"/>
+<text x="70" y="78" font-family="monospace" font-size="18" fill="#d9ee9a" font-weight="700" letter-spacing="4">REGRESSION / PRICING MODELS</text><text x="70" y="150" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">Estimating value</text><text x="70" y="208" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">from vehicle features.</text><text x="70" y="282" font-family="Arial,sans-serif" font-size="20" fill="#c9c9b9" font-weight="400">Feature engineering  •  VIF checks  •  Ridge and Lasso</text><g transform="translate(645 190)">
+<rect x="20" y="25" width="520" height="360" rx="18" fill="#172218" stroke="#657451" stroke-width="2"/>
+<g stroke="#75836a" stroke-opacity=".42"><path d="M60 85H505M60 155H505M60 225H505M60 295H505"/><path d="M125 60V335M225 60V335M325 60V335M425 60V335"/></g>
+<path d="M70 310 475 80" stroke="#e38a63" stroke-width="5" stroke-dasharray="12 9"/>
+<g fill="#d9ee9a" stroke="#172218" stroke-width="3"><circle cx="105" cy="285" r="8"/><circle cx="155" cy="265" r="8"/><circle cx="185" cy="260" r="8"/><circle cx="235" cy="215" r="8"/><circle cx="265" cy="240" r="8"/><circle cx="300" cy="180" r="8"/><circle cx="335" cy="190" r="8"/><circle cx="375" cy="135" r="8"/><circle cx="420" cy="130" r="8"/><circle cx="465" cy="93" r="8"/></g>
+<g transform="translate(90 360)"><path d="M0 25 24-4q10-12 27-12h128q19 0 32 16l23 25H0Z" fill="#829568" stroke="#d9ee9a" stroke-width="3"/><path d="M55-13h103l24 27H35Z" fill="#1b281d" stroke="#d9ee9a" stroke-width="2"/><circle cx="52" cy="27" r="16" fill="#101610" stroke="#c9c9b9" stroke-width="4"/><circle cx="195" cy="27" r="16" fill="#101610" stroke="#c9c9b9" stroke-width="4"/></g>
+<text x="58" y="65" fill="#d9ee9a" font-family="monospace" font-size="15">PREDICTED PRICE / MODEL FIT</text>
+</g></svg>

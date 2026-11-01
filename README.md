@@ -30,3 +30,8 @@ The chat widget uses the existing Cloud Run API at `https://ask-piyush-ai-44ufu2
 
 ## Certificates
 The Maven workshop certificate link is the user-provided Maven wrap-up URL for Charlie's Coffee. The page links directly to Maven instead of copying or rehosting the credential.
+
+
+## Project thumbnail artwork
+
+The project-card and case-study hero thumbnails are now a coordinated set of custom SVG infographics. Each one is project-specific and follows the California Traffic Collision reference palette (forest/olive, sage, cream and terracotta). The existing dashboard screenshots used inside the Namma Yatri case study gallery remain available as supporting project evidence.

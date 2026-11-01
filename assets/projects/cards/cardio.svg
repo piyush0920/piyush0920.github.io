@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img"><defs>
+<linearGradient id="wash" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#222d22"/><stop offset="1" stop-color="#111810"/></linearGradient>
+<pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#75836a" stroke-opacity=".22" stroke-width="1"/></pattern>
+<linearGradient id="sage" x1="0" x2="1"><stop stop-color="#d9ee9a"/><stop offset="1" stop-color="#829568"/></linearGradient>
+<filter id="soft"><feGaussianBlur stdDeviation="20"/></filter>
+</defs>
+<rect width="1200" height="675" fill="url(#wash)"/><rect width="1200" height="675" fill="url(#grid)"/>
+<circle cx="1000" cy="90" r="170" fill="#9eaa70" opacity=".07" filter="url(#soft)"/>
+<text x="70" y="78" font-family="monospace" font-size="18" fill="#d9ee9a" font-weight="700" letter-spacing="4">MACHINE LEARNING / RISK CLASSIFICATION</text><text x="70" y="150" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">Turning health data</text><text x="70" y="208" font-family="Arial,sans-serif" font-size="48" fill="#f3f0e4" font-weight="700">into risk signals.</text><text x="70" y="282" font-family="Arial,sans-serif" font-size="20" fill="#c9c9b9" font-weight="400">68,775 records  •  SVM  •  decision trees  •  threshold analysis</text><g transform="translate(655 185)">
+<path d="M245 115 C190 45 85 75 90 175 C95 270 245 370 245 370 S395 270 400 175 C405 75 300 45 245 115Z" fill="#e38a63" fill-opacity=".16" stroke="#e38a63" stroke-width="5"/>
+<path d="M90 218h80l28-48 30 105 36-150 34 93h35l26-35h62" fill="none" stroke="#d9ee9a" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="375" y="40" width="150" height="128" rx="14" fill="#172218" stroke="#829568" stroke-width="2"/><text x="395" y="70" fill="#d9ee9a" font-family="monospace" font-size="14">MODEL REVIEW</text>
+<g><rect x="398" y="88" width="48" height="28" fill="#829568" opacity=".7"/><rect x="452" y="88" width="48" height="28" fill="#e38a63" opacity=".8"/><rect x="398" y="120" width="48" height="28" fill="#e38a63" opacity=".55"/><rect x="452" y="120" width="48" height="28" fill="#829568" opacity=".45"/></g>
+<path d="M80 430H530" stroke="#657451" stroke-width="2"/><g fill="#d9ee9a"><rect x="110" y="390" width="32" height="40"/><rect x="165" y="365" width="32" height="65"/><rect x="220" y="345" width="32" height="85"/><rect x="275" y="375" width="32" height="55"/></g><g fill="#e38a63"><rect x="340" y="355" width="32" height="75"/><rect x="395" y="330" width="32" height="100"/><rect x="450" y="370" width="32" height="60"/></g>
+</g></svg>
