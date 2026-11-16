@@ -254,21 +254,53 @@
   async function postChatQuery(query, signal) {
     const contract = await discoverChatContract(signal);
     const body = buildChatBody(contract.bodySchema, query);
-    const requestUrl = new URL(`${CHAT_API_BASE}/chat`);
+    const params = {};
     for (const parameter of contract.queryParams) {
-      const value = valueForMissingField("query", parameter.name, query, contract, body);
-      if (value !== undefined && value !== null) requestUrl.searchParams.set(parameter.name, String(value));
+      params[parameter.name] = valueForMissingField("query", parameter.name, query, contract, body);
     }
-    const options = { method: "POST", headers: { Accept: "application/json" }, signal };
-    if (contract.bodySchema) {
-      options.headers["Content-Type"] = "application/json";
-      options.body = JSON.stringify(body);
+
+    // Retry only FastAPI 422 missing-field errors. FastAPI rejects these before
+    // the chat handler runs, so a corrected request cannot duplicate generation.
+    // Never retry timeouts, server errors, or ambiguous application responses.
+    let lastResult = null;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const requestUrl = new URL(`${CHAT_API_BASE}/chat`);
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) requestUrl.searchParams.set(key, String(value));
+      });
+      const options = { method: "POST", headers: { Accept: "application/json" }, signal };
+      if (contract.bodySchema) {
+        options.headers["Content-Type"] = "application/json";
+        options.body = JSON.stringify(body);
+      }
+      const response = await fetch(requestUrl.toString(), options);
+      const data = await readResponseJson(response);
+      const validationErrors = collectValidationErrors(data);
+      lastResult = { response, data, validationErrors };
+      if (response.status !== 422) return lastResult;
+
+      const missing = validationErrors.filter(error =>
+        error?.type === "missing" && Array.isArray(error.loc) && error.loc.length >= 2
+      );
+      if (!missing.length) return lastResult;
+
+      let changed = false;
+      for (const error of missing) {
+        const location = error.loc[0];
+        const field = error.loc[1];
+        if (typeof field !== "string") continue;
+        const value = valueForMissingField(location, field, query, contract, body);
+        if (location === "body" && body && typeof body === "object" && body[field] !== value) {
+          body[field] = value;
+          changed = true;
+        } else if (location === "query" && params[field] !== value) {
+          params[field] = value;
+          changed = true;
+        }
+      }
+      if (!changed) return lastResult;
     }
-    // One submitted question produces at most one generation request.
-    // Validation failures are shown instead of retrying with guessed fields.
-    const response = await fetch(requestUrl.toString(), options);
-    const data = await readResponseJson(response);
-    return { response, data, validationErrors: collectValidationErrors(data) };
+    return lastResult || { response: { ok: false, status: 0 }, data: {}, validationErrors: [] };
   }
 
   async function readResponseJson(response) {
