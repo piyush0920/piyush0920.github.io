@@ -7,7 +7,7 @@
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261116-review1" />
+  <link rel="stylesheet" href="style.css?v=20261118-benchmark" />
   <link rel="canonical" href="https://piyush0920.github.io/ask-piyush-ai.html" />
   <meta name="theme-color" content="#11160f" />
   <meta property="og:title" content="Ask Piyush AI | Piyush Sharma" />
@@ -22,6 +22,31 @@
   <main id="main" class="chat-page container"><noscript><p class="notice">The assistant needs JavaScript. <a href="index.html">Read the portfolio</a> or <a href="mailto:piyushsh0920@gmail.com">contact Piyush</a>.</p></noscript>
     <div class="chat-page-copy"><p class="eyebrow">AN APPLIED AI PROJECT</p><h1>Meet <em>Ask Piyush AI.</em></h1><p>A small RAG-powered assistant that helps you explore my experience, projects, technical skills and learning path. It retrieves from a curated portfolio knowledge base before generating an answer. Questions are sent to a hosted AI service; answers may be incomplete. Use the project pages and resume to check details.</p><button class="btn primary" data-open-chat>Open the assistant <span>↗</span></button><a class="chat-back-link" href="index.html">← Return to portfolio</a></div>
     <div class="chat-page-panel"><div class="chat-page-header"><span>ASK / EXPLORE</span><span>FASTAPI · CHROMADB · GEMINI</span></div><div class="chat-prompts"><button data-open-chat data-chat-prompt="Give me a quick overview of Piyush's background and strengths."><span>01</span><strong>Give me the 60-second overview.</strong><b>↗</b></button><button data-open-chat data-chat-prompt="Which projects best demonstrate Piyush's data analytics and BI skills?"><span>02</span><strong>Show me the analytics work.</strong><b>↗</b></button><button data-open-chat data-chat-prompt="Explain the architecture of Ask Piyush AI."><span>03</span><strong>How was this assistant built?</strong><b>↗</b></button><button data-open-chat data-chat-prompt="What are Piyush's technical skills across analytics, data science and GenAI?"><span>04</span><strong>Explore the technical toolkit.</strong><b>↗</b></button></div><div class="chat-page-foot"><span>RETRIEVE → GENERATE → CITE</span><span>BUILT &amp; DEPLOYED BY PIYUSH</span></div></div>
+    <section class="section container benchmark-section" aria-labelledby="benchmark-title">
+      <div class="section-side"><p class="eyebrow">BENCHMARK / V2</p><span class="side-caption">LIVE API PERFORMANCE</span></div>
+      <div class="benchmark-content">
+        <p class="eyebrow">30 QUESTIONS · 6 CATEGORIES</p>
+        <h2 id="benchmark-title">Measured performance.<br /><em>Not assumed accuracy.</em></h2>
+        <p>The deployed FastAPI /chat endpoint was tested with 30 sequential questions across experience, skills, analytics projects, GenAI projects, portfolio and out-of-scope prompts. Requests were paced at five per minute, with three warm-up requests reported separately.</p>
+        <div class="benchmark-metrics" role="list" aria-label="Warm-instance benchmark results">
+          <div role="listitem"><strong>100%</strong><span>HTTP success · 30/30</span></div>
+          <div role="listitem"><strong>1.68<span>s</span></strong><span>Warm median · p50</span></div>
+          <div role="listitem"><strong>2.29<span>s</span></strong><span>Warm mean latency</span></div>
+          <div role="listitem"><strong>6.22<span>s</span></strong><span>Warm p95 latency</span></div>
+        </div>
+        <div class="benchmark-notes">
+          <p><strong>Rate limits:</strong> zero HTTP 429 retries at the tested pacing. Warm-instance latency ranged from 1.39 s to 7.70 s.</p>
+          <p><strong>Warm-up:</strong> 8.61 s, 6.15 s and 7.73 s across three requests. The first request is only a cold-start estimate if the service was idle; idle time was not recorded, so cold start is unverified.</p>
+          <p><strong>Interpretation:</strong> experience questions were the slowest category (4.60 s mean, 4.00 s median). This run measures speed and availability only—not answer correctness, groundedness, refusal quality or concurrent-load performance.</p>
+        </div>
+        <div class="benchmark-actions">
+          <a class="btn primary" href="assets/ask-piyush-ai-benchmark-report.html" target="_blank" rel="noreferrer">View / print full benchmark report <span>↗</span></a>
+          <a class="btn secondary" href="assets/ask-piyush-ai-benchmark-report.html" download="Ask-Piyush-AI-Benchmark-Report.html">Download report <span>↓</span></a>
+          <a class="btn secondary" href="https://github.com/piyush0920/piyush0920.github.io/blob/main/ask_piyush_ai_benchmark_v2.py" target="_blank" rel="noreferrer">View benchmark script <span>↗</span></a>
+        </div>
+        <p class="benchmark-footnote">The report includes methodology, category-level timings, findings and limitations. It also has a Print / Save as PDF control. Results reflect one single-user run and should not be interpreted as a quality or scalability score.</p>
+      </div>
+    </section>
   </main>
   <footer class="footer"><div class="container footer-inner"><a class="footer-brand" href="index.html">PS<span>.</span></a><span>© <span id="year"></span> Piyush Sharma</span><span>ASK PIYUSH AI · PORTFOLIO ASSISTANT</span><a href="index.html">PORTFOLIO ↑</a></div></footer>
   <script defer src="script.js?v=20261116-review1"></script><script defer src="chat-widget.js?v=20261116-review1"></script>
