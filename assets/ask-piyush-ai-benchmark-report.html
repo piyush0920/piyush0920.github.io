@@ -122,19 +122,6 @@
     <li>The LLM runs on the Gemini free tier, so upstream model API variability may contribute to latency.</li>
   </ul>
 
-  <h2>6. Recommended next steps</h2>
-  <ol>
-    <li>Compare timings with Cloud Run logs for the same window — container start count and per-request latency — to confirm whether a request triggered a cold start.</li>
-    <li>Add server-side timing inside <code>/chat</code> to separate retrieval time from generation time, then investigate slower experience and role questions.</li>
-    <li>Manually review all 30 answers as correct, partial or wrong to establish an answer-quality figure. Set <code>SAVE_RESULTS = True</code> in the benchmark script to retain raw rows.</li>
-    <li>Repeat the benchmark two or three times, including once after a deliberate idle gap, and report the median across runs.</li>
-    <li>If cold starts matter, consider a minimum of one Cloud Run instance while weighing the added cost against the free-hosting goal.</li>
-  </ol>
-
-  <h2>7. Portfolio wording supported by this test</h2>
-  <div class="callout"><strong>Benchmarked the live Ask Piyush AI RAG chatbot (FastAPI, Google Cloud Run, Gemini) with a 30-question suite across six categories: 100% request success, 1.68 s median and 6.22 s p95 latency on a warm instance.</strong></div>
-  <p class="muted">Avoid claiming accuracy or cold-start figures until manual answer review and the Cloud Run log comparison are complete.</p>
-
   <div class="actions no-print">
     <button class="button" type="button" onclick="window.print()">Print / Save as PDF</button>
     <a class="button alt" href="../ask-piyush-ai.html">Back to Ask Piyush AI</a>
