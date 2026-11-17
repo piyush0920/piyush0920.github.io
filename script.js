@@ -181,9 +181,9 @@ const portfolioData = {
         "Google Cloud Run"
       ],
       "metrics": [
-        "3 knowledge files",
-        "Source-aware answers",
-        "Containerized deployment"
+        "30/30 benchmark requests succeeded",
+        "1.68 s warm median latency",
+        "6.22 s warm p95 latency"
       ],
       "visual": "GENAI / PORTFOLIO ASSISTANT",
       "caseTitle": "A personal portfolio assistant grounded in retrieved knowledge.",
@@ -192,7 +192,9 @@ const portfolioData = {
         "FastAPI chat API",
         "ChromaDB semantic retrieval",
         "Gemini answer generation",
-        "Docker + Cloud Run"
+        "Docker + Cloud Run",
+        "30/30 successful benchmark requests",
+        "1.68 s warm p50 · 6.22 s p95"
       ],
       "problem": "A static portfolio makes visitors browse several pages to learn about a person's work. The goal was to provide a conversational interface that answers common questions while grounding responses in maintained portfolio knowledge instead of relying on model memory alone.",
       "approach": [
@@ -225,7 +227,9 @@ const portfolioData = {
       "repoUrl": "https://github.com/piyush0920/piyush0920.github.io",
       "relevance": "Demonstrates delivery from a knowledge base to a usable interface, including retrieval, API integration and error handling.",
       "limitations": "This repository package contains the frontend integration. The backend, knowledge files, deployment configuration and logs are not included here. Source labels identify retrieved files; they do not establish that every generated claim is correct.",
-      "repoLabel": "Frontend source"
+      "repoLabel": "Frontend source",
+      "benchmarkReportUrl": "assets/ask-piyush-ai-benchmark-report.html",
+      "benchmarkSummary": "30-question live API benchmark: 100% HTTP success, 1.68 s warm p50 and 6.22 s warm p95. Speed and availability only; answer quality was not scored."
     },
     {
       "slug": "forecast",
